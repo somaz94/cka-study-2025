@@ -24,7 +24,7 @@ kubectl kustomize /opt/course/5/api-gateway/prod | kubectl apply -f -
 ## 해결 방법
 
 ### 1. ConfigMap 제거
-# base/api-gateway.yaml, staging/api-gateway.yaml, prod/api-gateway.yaml에서 ConfigMap 제거
+- `base/api-gateway.yaml, staging/api-gateway.yaml, prod/api-gateway.yaml`에서 ConfigMap 제거
 
 ```bash
 k -n api-gateway-staging delete cm horizontal-scaling-config
