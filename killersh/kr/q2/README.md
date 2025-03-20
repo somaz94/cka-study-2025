@@ -17,11 +17,11 @@ MinIO Operator를 Helm을 사용하여 `minio` Namespace에 설치하고, Tenant
 <br/>
 
 ## 주요 개념
-# Helm Chart: Kubernetes YAML 템플릿 파일들을 단일 패키지로 결합, Values로 커스터마이징 가능
-# Helm Release: Chart의 설치된 인스턴스
-# Helm Values: Release 생성 시 Chart의 YAML 템플릿 파일 커스터마이징 가능
-# Operator: Kubernetes API와 통신하고 CRD와 작동할 수 있는 Pod
-# CRD: Kubernetes API의 확장인 Custom Resources
+- Helm Chart: Kubernetes YAML 템플릿 파일들을 단일 패키지로 결합, Values로 커스터마이징 가능
+- Helm Release: Chart의 설치된 인스턴스
+- Helm Values: Release 생성 시 Chart의 YAML 템플릿 파일 커스터마이징 가능
+- Operator: Kubernetes API와 통신하고 CRD와 작동할 수 있는 Pod
+- CRD: Kubernetes API의 확장인 Custom Resources
 
 <br/>
 
