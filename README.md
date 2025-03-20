@@ -25,6 +25,8 @@
 - [CoreDNS 설정 업데이트하기](./killersh/kr/q16/README.md)
 - [Pod의 컨테이너 찾고 정보 확인하기](./killersh/kr/q17/README.md)
 
+### CKA Killersh v2
+
 ## CKA Killersh Prveious
 
 <br/>
@@ -34,5 +36,10 @@
 - [Kube-Proxy iptables 규칙 확인하기](./killersh/pr2/README.md)
 - [Service CIDR 변경하기](./killersh/pr3/README.md)
 
+### CKA Killersh v2
+
 <br/>
 
+
+## Custom CKA Study
+- [문제 모음](./custom-cka-study/README.md)
