@@ -44,7 +44,6 @@
 ## Custom CKA Study
 - [문제 모음](./custom-cka-study/README.md)
 - [문제 모음(한글)](./custom-cka-study/README_KR.md)
-
 - [ETCD Backup and Restore](./custom-cka-study/q1/README.md)
 - [Multi-Container Pod Troubleshooting](./custom-cka-study/q2/README.md)
 - [Node Maintenance](./custom-cka-study/q3/README.md)
