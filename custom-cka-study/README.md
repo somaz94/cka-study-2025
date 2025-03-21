@@ -1,87 +1,267 @@
-## q1: ETCD 백업 및 복구
-클러스터의 ETCD 데이터를 백업하고 복구하는 시나리오를 수행하세요:
-1. 현재 ETCD 데이터를 `/opt/backup/etcd-backup.db`에 백업
-2. 테스트용 네임스페이스와 디플로이먼트 생성
-3. 백업한 시점으로 ETCD 데이터 복구
-4. 복구 후 테스트용 리소스들이 사라졌는지 확인
+# CKA Practice Questions
 
 <br/>
 
-## q2: 멀티 컨테이너 파드 트러블슈팅
-다음 요구사항을 만족하는 멀티 컨테이너 파드를 생성하고 문제를 해결하세요:
-1. 첫 번째 컨테이너: nginx
-2. 두 번째 컨테이너: busybox (로그 감시용)
-3. 두 컨테이너가 동일한 볼륨을 공유하도록 설정
-4. 로그 파일 권한 문제 해결
+## q1: ETCD Backup and Restore
+
+Perform ETCD backup and restore scenario on node `cluster1-controlplane`. Use the following information:
+
+ETCD Endpoint: https://127.0.0.1:2379
+CA Certificate: /etc/kubernetes/pki/etcd/ca.crt
+Server Certificate: /etc/kubernetes/pki/etcd/server.crt
+Server Key: /etc/kubernetes/pki/etcd/server.key
+
+Tasks:
+1. Backup current ETCD data to `/opt/backup/etcd-backup.db` using the certificates provided
+2. Create a test namespace called `pre-restore` and deployment `nginx` with image `nginx:1.22`
+3. Restore ETCD data to backup point
+4. Verify test resources (namespace and deployment) are gone after restore
 
 <br/>
 
-## q3: 노드 유지보수
-클러스터의 워커 노드 중 하나를 유지보수하기 위한 작업을 수행하세요:
-1. 노드를 스케줄 불가능 상태로 변경
-2. 실행 중인 파드들을 안전하게 다른 노드로 이동
-3. 시스템 업그레이드 시뮬레이션 (30초 대기)
-4. 노드를 다시 스케줄 가능 상태로 변경
+## q2: Multi-Container Pod Troubleshooting
+
+Create and troubleshoot a multi-container pod with the following requirements:
+
+### Initial Setup
+1. Create a pod named `multi-container-pod` with two containers:
+   - Container 1: nginx (name: nginx)
+   - Container 2: busybox (name: log-monitor)
+
+2. Configure shared volumes:
+   - Volume `shared-data`: mounted at `/usr/share/nginx/html` in nginx container
+   - Volume `nginx-logs`: mounted at `/var/log/nginx` in both containers
+
+3. Configure log monitoring:
+   - `busybox` container should continuously monitor nginx access logs
+   - Use command: `tail -f /var/log/nginx/access.log`
+
+### Troubleshooting Tasks
+1. Fix permission issues:
+   - Ensure both containers can access nginx log files
+   - Configure appropriate security context
+   - Verify log monitoring is working
+
+### Verification Steps
+1. Verify pod is running:
+```bash
+kubectl get pod multi-container-pod
+```
+
+2. Test nginx is working:
+```bash
+kubectl exec multi-container-pod -c nginx -- curl localhost
+```
+
+3. Check log monitoring:
+```bash
+kubectl logs multi-container-pod -c log-monitor
+```
+
+4. Verify shared volumes:
+```bash
+kubectl exec multi-container-pod -c nginx -- ls /usr/share/nginx/html
+kubectl exec multi-container-pod -c log-monitor -- ls /var/log/nginx
+```
+
+Note: All containers should run with appropriate permissions to access shared resources.
 
 <br/>
 
-## q4: 네트워크 정책 구성
-다음 요구사항을 만족하는 네트워크 정책을 구성하세요:
-1. 'frontend' 네임스페이스의 파드들은 'backend' 네임스페이스의 파드들과만 통신 가능
-2. 'backend' 네임스페이스의 파드들은 'database' 네임스페이스의 파드들과만 통신 가능
-3. 'database' 네임스페이스의 파드들은 외부 통신 불가
-4. 정책 적용 확인을 위한 테스트 수행
+## q3: Node Maintenance
+Perform maintenance on one of the worker nodes:
+1. Mark node as unschedulable
+2. Safely evacuate running pods to other nodes
+3. Simulate system upgrade (wait 30 seconds)
+4. Mark node as schedulable again
 
 <br/>
 
-## q5: 사용자 인증 및 권한 관리
-새로운 관리자를 위한 인증서 기반 인증을 구성하세요:
-1. 새로운 사용자 인증서 생성
-2. 해당 사용자에게 특정 네임스페이스의 관리자 권한 부여
-3. kubeconfig 파일 생성
-4. 권한 테스트 수행
+## q4: Configure Network Policy
+Configure a network policy that meets the following requirements:
+
+## Initial Settings
+1. Create the following namespaces:
+- Front end
+- Backend
+- Database
+
+2. Distribute test nginx pods to each namespace:
+- front end/front end-pot
+- Backend/Backend-Pod
+- Database/DB-Pod
+
+## Network Policy Requirements
+1. Frontend Namespace:
+- Can only communicate with the pad in the backend namespace
+- Block all other ingress/egress traffic
+- Label: Role = Front End
+
+2. backend Namespace:
+- Allow traffic from the frontend
+- Allow only outgoing traffic to database namespaces
+- Label: Role = Backend
+
+3. Database Namespace:
+- Allow traffic from the backend only
+- Blocking All Aggress Traffic
+- Label: Role=database
+
+## Verification Test
+Perform the following tests to ensure that the policy is applied correctly:
+
+1. Front-end -> Back-end Communication Test
+2. Frontend -> Check Database Communication Blocking
+3. Backend -> Database Communication Test
+4. database -> confirmation of external communication block
+
+The test is performed using the following command:
+```bash
+kubectl execute -it <pod-name> -n <namespace> -- wget -qO- -- timeout=2 http://<target-pod-ip>
+```
+
+Record all communication test results in the file '/opt/network-policy-test.txt'.
+
 
 <br/>
 
-## q6: 리소스 관리 및 스케줄링
-다음 요구사항을 만족하는 파드 스케줄링을 구성하세요:
-1. GPU 레이블이 있는 노드에만 특정 파드가 스케줄되도록 설정
-2. 메모리 요구사항이 높은 파드들이 특정 노드에 분산되도록 구성
-3. 특정 파드들이 서로 다른 노드에 배포되도록 anti-affinity 규칙 설정
-4. 노드 리소스 사용량 모니터링 구성
+## q5: User authentication and permission management
+
+Configure certificate-based authentication for new development team administrators.
+
+### Initial Settings
+1. Create a new user certificate with the following information:
+- Username: developer-admin
+- Group: devops-team
+- Certificate validity: 365 days
+- Certificate storage location: `/opt/certificates/developer-admin.crt`
+- Private key storage location: `/opt/certificates/developer-admin.key`
+
+2. Create a `development` name space and grant the following privileges:
+- All rights to Deployment, Pod, Service resources
+- Read permissions for ConfigMap and Secret
+- No access to Namespace resources
+
+### kubeconfig settings
+1. Create a kubeconfig file with the following settings:
+- File location: `/opt/certificates/developer-admin.kubeconfig`
+- Context name: `developer-context`
+- Cluster name: `kubernetes`
+- Namespace: `development`
+
+### Test permissions
+Make sure your permissions are set correctly by performing the following tasks:
+
+1. Test authentication with the new kubeconfig:
+```bash
+kubectl --kubeconfig=/opt/certificates/developer-admin.kubeconfig get pods -n development
+```
+
+2. Test the following privileges and record the results to /opt/developer-admin-tests.txt:
+- Whether Deployment can be created
+- ConfigMap Readability
+- Secret Readability
+- Can't create Namespace
+
+### Estimated deliverables
+1. Certificate files:
+- /opt/certificates/developer-admin.crt
+- /opt/certificates/developer-admin.key
+2. kubeconfig file:
+- /opt/certificates/developer-admin.kubeconfig
+3. Test Results File:
+- /opt/developer-admin-tests.txt
+
+Note: All certificates must be signed with the cluster's CA, and files must be generated with the appropriate permissions.
 
 <br/>
 
-## q7: 서비스 및 인그레스 구성
-다음 요구사항을 만족하는 서비스 구성을 수행하세요:
-1. NodePort 서비스로 애플리케이션 노출
-2. 인그레스 컨트롤러 설정
-3. 도메인 기반 라우팅 규칙 구성
-4. SSL/TLS 인증서 적용
+## q6: Resource Management and Scheduling
+Configure pod scheduling with following requirements:
+1. Schedule specific pods only on nodes with GPU label
+2. Distribute memory-intensive pods across specific nodes
+3. Set anti-affinity rules for certain pods
+4. Configure node resource usage monitoring
 
 <br/>
 
-## q8: 스토리지 구성
-다음 요구사항을 만족하는 스토리지 구성을 수행하세요:
-1. 동적 프로비저닝을 위한 StorageClass 생성
-2. PVC를 사용하는 스테이트풀셋 배포
-3. 볼륨 스냅샷 생성 및 복구
-4. 스토리지 확장 테스트
+## q7: Service and Ingress Configuration
+Perform service configuration with following requirements:
+1. Expose application using NodePort service
+2. Set up ingress controller
+3. Configure domain-based routing rules
+4. Apply SSL/TLS certificates
 
 <br/>
 
-## q9: 로깅 및 모니터링
-클러스터의 모니터링 시스템을 구성하세요:
-1. metrics-server 설치 및 구성
-2. HorizontalPodAutoscaler 설정
-3. 노드 및 파드 메트릭 수집 확인
-4. 리소스 사용량 기반 자동 스케일링 테스트
+## q8: Storage Configuration
+Configure storage with following requirements:
+1. Create StorageClass for dynamic provisioning
+2. Deploy StatefulSet using PVC
+3. Create and restore volume snapshots
+4. Test storage expansion
 
 <br/>
 
-## q10: 클러스터 업그레이드
-클러스터 업그레이드 절차를 수행하세요:
-1. 현재 버전에서 한 단계 높은 버전으로 업그레이드 계획 수립
-2. 컨트롤 플레인 컴포넌트 업그레이드
-3. 워커 노드 순차적 업그레이드
-4. 업그레이드 완료 후 기능 테스트
+## q9: Logging and Monitoring
+Configure cluster monitoring system:
+1. Install and configure metrics-server
+2. Set up HorizontalPodAutoscaler
+3. Verify node and pod metrics collection
+4. Test resource usage based auto-scaling
+
+<br/>
+
+## q10: Cluster Upgrade
+Perform cluster upgrade procedure:
+1. Plan upgrade from current version to next minor version
+2. Upgrade control plane components
+3. Sequentially upgrade worker nodes
+4. Test functionality after upgrade
+
+<br/>
+
+## q11: CoreDNS Configuration
+Update CoreDNS configuration:
+1. Backup current CoreDNS configuration
+2. Add custom domain resolution
+3. Configure stub domain
+4. Verify DNS resolution works correctly
+
+<br/>
+
+## q12: Pod Security Policy
+Implement pod security policies:
+1. Create policy preventing privileged containers
+2. Configure volume type restrictions
+3. Set up container user and group restrictions
+4. Test policy enforcement
+
+<br/>
+
+## q13: Cluster Troubleshooting
+Diagnose and resolve cluster issues:
+1. Fix broken kubelet service
+2. Resolve API server connectivity issues
+3. Debug pod scheduling failures
+4. Repair broken service networking
+
+<br/>
+
+## q14: Custom Resource Definition
+Work with custom resources:
+1. Create CRD for application configuration
+2. Implement custom controller
+3. Test resource validation
+4. Verify custom resource functionality
+
+<br/>
+
+## q15: High Availability Configuration
+Configure high availability:
+1. Set up multi-master control plane
+2. Configure etcd cluster
+3. Implement load balancing
+4. Test failover scenarios
+
+Note: Each question is designed to test practical skills required for the CKA exam and real-world Kubernetes administration.
