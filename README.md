@@ -48,9 +48,11 @@
 - [Multi-Container Pod Troubleshooting](./custom-cka-study/kr/q2/README.md)
 - [Node Maintenance](./custom-cka-study/kr/q3/README.md)
 - [Network Policy](./custom-cka-study/kr/q4/README.md)
-- [Resource Management and Scheduling](./custom-cka-study/kr/q5/README.md)
-- [Service and Ingress Configuration](./custom-cka-study/kr/q6/README.md)
-- [Storage Configuration](./custom-cka-study/kr/q7/README.md)
-- [Logging and Monitoring](./custom-cka-study/kr/q8/README.md)
+- [Configuring User Authentication and Permissions Management](./custom-cka-study/kr/q5/README.md)
+- [Resource Management and Scheduling](./custom-cka-study/kr/q6/README.md)
+- [Service and Ingress Configuration](./custom-cka-study/kr/q7/README.md)
+- [Storage Configuration](./custom-cka-study/kr/q8/README.md)
+- [Logging and Monitoring](./custom-cka-study/kr/q9/README.md)
+- [Cluster Upgrade](./custom-cka-study/kr/q10/README.md)
 
 <br/>
