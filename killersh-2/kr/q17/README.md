@@ -102,3 +102,36 @@ roleRef:
   name: operator-role
   apiGroup: rbac.authorization.k8s.io
 ```
+
+## 6. 변경사항 재배포 및 Pod 재시작
+
+```bash
+# 변경사항 재배포
+kubectl kustomize /opt/course/17/operator/prod | kubectl apply -f -
+
+# Pod 재시작을 위해 기존 Pod 삭제
+kubectl -n operator-prod delete pod -l app=operator
+
+# 새로운 Pod 생성 확인
+kubectl -n operator-prod get pod -w
+
+# 로그 확인하여 권한 문제 해결됐는지 확인
+kubectl -n operator-prod logs -l app=operator
+# 예상 결과:
+# + kubectl get students
+# NAME       AGE
+# student1   28m
+# student2   28m
+# student3   27m
+# student4   43s
+# + kubectl get classes
+# NAME       AGE
+# advanced   20m
+```
+
+<br/>
+
+## 주의사항:
+1. Pod를 삭제하면 Deployment가 자동으로 새로운 Pod를 생성
+2. 새로운 Pod가 생성되어 Ready 상태가 될 때까지 기다려야 함
+3. 로그를 확인하여 students와 classes 리소스에 대한 접근 권한이 정상적으로 작동하는지 확인

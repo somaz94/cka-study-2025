@@ -28,7 +28,7 @@ kubectl get node cka5248 --show-labels
 # 기본 Pod YAML 생성
 kubectl run pod1 --image=httpd:2-alpine --dry-run=client -o yaml > 12.yaml
 
-# YAML 수정
+# YAML 수정 - 방법 1: nodeSelector와 tolerations 사용
 cat << EOF > 12.yaml
 apiVersion: v1
 kind: Pod
@@ -46,6 +46,21 @@ spec:
   nodeSelector:
     node-role.kubernetes.io/control-plane: ""
 EOF
+
+# 또는 방법 2: nodeName 직접 지정
+cat << EOF > 12.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod1
+  labels:
+    run: pod1
+spec:
+  containers:
+  - name: pod1-container
+    image: httpd:2-alpine
+  nodeName: cka5248
+EOF
 ```
 
 <br/>
@@ -62,15 +77,16 @@ kubectl get pod pod1 -o wide
 <br/>
 
 ## 구성 설명:
-1. tolerations:
-   - 컨트롤플레인 노드의 NoSchedule taint를 허용
-   - key: node-role.kubernetes.io/control-plane
-   - effect: NoSchedule
+1. 방법 1: nodeSelector와 tolerations 사용
+   - tolerations: 컨트롤플레인 노드의 NoSchedule taint를 허용
+   - nodeSelector: 컨트롤플레인 노드에만 스케줄링되도록 강제
+   - 장점: 유연한 스케줄링 정책 구현 가능
+   - 단점: 설정이 더 복잡함
 
-2. nodeSelector:
-   - 컨트롤플레인 노드에만 스케줄링되도록 강제
-   - node-role.kubernetes.io/control-plane: ""
-   - 값이 없는 키-온리 레이블 사용
+2. 방법 2: nodeName 사용
+   - 특정 노드에 직접 스케줄링
+   - 장점: 설정이 간단함
+   - 단점: 유연성이 떨어지고 노드 장애 시 대응이 어려움
 
 <br/>
 
@@ -87,3 +103,4 @@ pod1   1/1     Running   0          3s    <none>   cka5248
 2. nodeSelector를 추가하여 컨트롤플레인 노드에만 스케줄링
 3. 기존 노드 레이블만 사용
 4. 컨테이너 이름이 정확히 pod1-container여야 함
+5. nodeName 사용 시 직접적인 노드 지정으로 인한 유연성 감소 고려

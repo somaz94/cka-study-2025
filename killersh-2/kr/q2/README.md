@@ -25,6 +25,8 @@ kind: Pod
 metadata:
   name: my-static-pod
   namespace: default
+  labels:
+    app.kubernetes.io/name: my-static-pod
 spec:
   containers:
   - name: nginx
