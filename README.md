@@ -34,6 +34,15 @@
 - [Kubelet 문제 해결](./killersh-2/kr/q6/README.md)
 - [ETCD 버전 확인 및 스냅샷 생성](./killersh-2/kr/q7/README.md)
 - [컨트롤플레인 컴포넌트 조사](./killersh-2/kr/q8/README.md)
+- [스케줄러 중지 및 수동 스케줄링](./killersh-2/kr/q9/README.md)
+- [PV, PVC 및 동적 프로비저닝 구성](./killersh-2/kr/q10/README.md)
+- [Secret 생성 및 Pod 마운트](./killersh-2/kr/q11/README.md)
+- [컨트롤플레인 노드에 Pod 스케줄링](./killersh-2/kr/q12/README.md)
+- [멀티 컨테이너 Pod와 공유 볼륨 구성](./killersh-2/kr/q13/README.md)
+- [클러스터 정보 조사](./killersh-2/kr/q14/README.md)
+- [클러스터 이벤트 로깅 실습](./killersh-2/kr/q15/README.md)
+- [네임스페이스와 API 리소스](./killersh-2/kr/q16/README.md)
+- [오퍼레이터, CRD, RBAC, Kustomize](./killersh-2/kr/q17/README.md)
 
 
 ## CKA Killersh Prveious
