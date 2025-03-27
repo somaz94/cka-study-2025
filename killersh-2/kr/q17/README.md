@@ -103,6 +103,24 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 ```
 
+## 4. Student 리소스 추가
+
+```bash
+# base/students.yaml 수정
+vi base/students.yaml
+```
+
+```yaml
+# base/students.yaml에 추가
+apiVersion: education.killer.sh/v1
+kind: Student
+metadata:
+  name: student4
+spec:
+  name: Some Name
+  description: Some Description
+```
+
 ## 6. 변경사항 재배포 및 Pod 재시작
 
 ```bash
